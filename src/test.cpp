@@ -1,16 +1,19 @@
+#include <list>
 #include <iostream>
 #include <stdlib.h>
 #include <casagrande.h>
+#include <initializer_list>
 
 // Container -- problem 1
-template <class T>
-static int
-p1(){
+template <class T> static int
+p1(const std::initializer_list<T> il){
 	unsigned count;
 
 	casagrande<T> cg;
 	typename casagrande<T>::const_iterator i = cg.begin();
+	cg.insert(cg.begin(), il);
 	for(count = 0 ; i != cg.end() ; ++i){
+		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
 	}
 	std::cout << "Iterated over " << count << " elements." << std::endl;
@@ -30,8 +33,10 @@ p3(){
 }
 
 int main(void){
+	const std::initializer_list<int> il = {0, 1, 2, 3};
+
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(p1<int>()){
+	if(p1<int>(il)){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
