@@ -12,7 +12,7 @@ COBJ:=$(SRC:%.cpp:%.o)
 CBIN:=$(PROJ)
 
 CFLAGS+=-std=c++0x -I$(SRC) -fvisibility=hidden -O2 -Wall -W -Werror
-LFLAGS+=-Wl,-O,--default-symver,--enable-new-dtags,--as-needed,--warn-common
+LFLAGS+=-Wl,-O,--enable-new-dtags,--warn-common
 CTAGS?=$(shell (which ctags || echo ctags) 2> /dev/null)
 
 all: $(TAGS) bin
