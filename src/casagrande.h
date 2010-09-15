@@ -28,8 +28,24 @@ public:
 	typedef ptrdiff_t difference_type;
 	typedef size_t size_type;
 
+	reference operator[](size_type n){
+		std::cout << "n: " << n << std::endl;
+		return 0; // FIXME
+	}
+
+	const_reference operator[](size_type n) const;
+
+	reference front() { return operator[](0); }
+	const_reference front() const { return operator[](0); }
+
+	reference back() { return operator[](elems - 1); }
+	const_reference back() const { return operator[](elems - 1); }
+
+	iterator begin(){ return 0; } // FIXME
+	const_iterator begin() const { return 0; } // FIXME
+
 	// FIXME
-	const_iterator begin() const { return 0; }
+	iterator end(){ return 0; }
 	const_iterator end() const { return 0; }
 
 	size_type size() const { return elems; }
