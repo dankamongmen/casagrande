@@ -1,0 +1,50 @@
+Problem 1 - General Container
+
+Much inspiration was had from Chapters 5 and 9, "Containers", of Austern's
+"Generic Programming and the STL", and the SGI STL documentation.
+
+A C++ container must:
+
+ - contain elements (value semantics rather than pointer semantics)
+ - provide access to those elements (iterators and keyed lookup)
+ - supplies functionality necessary for regular types (basic STL concepts)
+
+and classically supported at least assignment and copy construction (I
+understand that this requirement is weakened in C++0x?).
+
+A general-purpose container is capable of using all available memory, but
+does not do so unless necessary; this will require the variable-size
+container model. Our container will thus model the Sequence or
+Associative Container concepts. As a Sequence is required to effectively
+support the Stack and Queue container adapters, we'll want a well-ordered
+underlying container for Problems 2 and 3. Since vector furthermore lacks
+pop_front(), list or deque suggest themselves (given Problem 2).
+
+If we are optimizing for LIFO, FIFO or FLIFO behavior, we can use very
+simple, very aggressive allocation and management. At most, we will need
+to track:
+
+ - Allocated regions (one pointer each), since we can't robustly request
+    gigantic contiguous regions (especially in the absence of VM). This
+    Sequence will itself need only FLIFO support; a deque would work well.
+ - Free space in the head and tail regions (1 or 2 unsigned ints).
+ - The object size, adjusted for padding (if applicable).
+
+As this will provide both a lean solution to Problem 1 and a natural,
+efficient base for Problems 2 and 3, I'll likely optimize for this case.
+I'll thus essentially be implementing a deque object.
+
+To more effectively support atomic (non-iterated) types, we can use TR1's
+type_traits to test for integral types at compile time, specializing on
+is_integral<T>::value.
+
+OPTIONAL: To spice up this solution, I can use VMA remapping via
+ OS-specific functionality such as Linux's mremap().
+
+Problem 2 - General Queue
+
+  Queue container adapter atop Problem 1.
+
+Problem 3 - General Stack
+
+  Stack container adapter atop Problem 1.
