@@ -23,7 +23,7 @@ $(PROJ): $(CSRC) $(CINC)
 	$(CXX) $(CFLAGS) -o $@ $(CSRC) $(LFLAGS)
 
 test: all
-	for test in $(BIN) ; do ./$$test ; done
+	for test in $(CBIN) ; do ./$$test ; done
 
 $(TAGS): $(CSRC) $(CINC)
 	$(CTAGS) -o $@ $^
