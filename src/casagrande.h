@@ -1,8 +1,6 @@
 #ifndef CASAGRANDE_CASAGRANDE
 #define CASAGRANDE_CASAGRANDE
 
-#include <iostream>
-
 #include <cstddef>
 #include <initializer_list>
 
@@ -31,16 +29,15 @@ public:
 	bool empty() const { return true; }
 	size_type max_size() const { return 0; }
 
-	iterator insert(iterator,const value_type &);
-	void insert(iterator,size_type,const value_type &);
+	iterator insert(const_iterator,const value_type &);
+	void insert(const_iterator,size_type,const value_type &);
 
 	void insert(const_iterator ci,const std::initializer_list<value_type> ti){
-		// FIXME this is all bogon junk
-		std::cout << "ci: " << " ti: " << std::endl;
-		if(ci == 0){
-			std::cout << "interesting" << std::endl;
+		const_iterator cil;
+
+		for(cil = ti.begin() ; cil != ti.end() ; ++cil){
+			insert(ci,*cil);
 		}
-		std::cout << ti.size() << std::endl;
 	}
 
 	void swap(casagrande &){}
