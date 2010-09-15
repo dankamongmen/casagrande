@@ -8,10 +8,10 @@ template <class T>
 struct casagrande {
 	typedef T vtype;
 
-	typedef vtype *vptr;
-	typedef const vtype *const_vptr;
-	typedef vtype &vref;
-	typedef const vtype &const_vref;
+	typedef vtype *pointer;
+	typedef const vtype *const_pointer;
+	typedef vtype &reference;
+	typedef const vtype &const_reference;
 
 	typedef vtype *iterator;
 	typedef const vtype *const_iterator;
