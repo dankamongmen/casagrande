@@ -4,12 +4,17 @@
 #include <cstddef>
 #include <initializer_list>
 
+#include <iostream>
+
 // Adapted from Austern 98's "Trivial Container" (p 71)
 template <class T>
 class casagrande {
 	unsigned elems;
 
 public:
+	casagrande(){ elems = 0; }
+	~casagrande(){}
+
 	typedef T value_type;
 
 	typedef value_type *pointer;
@@ -23,13 +28,24 @@ public:
 	typedef ptrdiff_t difference_type;
 	typedef size_t size_type;
 
+	// FIXME
 	const_iterator begin() const { return 0; }
 	const_iterator end() const { return 0; }
-	size_type size() const { return 0; }
-	bool empty() const { return true; }
-	size_type max_size() const { return 0; }
 
-	iterator insert(const_iterator,const value_type &);
+	size_type size() const { return elems; }
+	bool empty() const { return !elems; }
+
+	// FIXME
+	size_type max_size() const { return elems; }
+
+	iterator insert(const_iterator ci,const value_type &val){
+		if(ci){
+			// FIXME
+			std::cout << "val: " << val << std::endl;
+		}
+		return 0;
+	}
+
 	void insert(const_iterator,size_type,const value_type &);
 
 	void insert(const_iterator ci,const std::initializer_list<value_type> ti){
