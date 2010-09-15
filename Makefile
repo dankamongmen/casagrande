@@ -7,12 +7,12 @@ TAGS:=.tags
 PROJ:=casagrande
 
 CINC:=$(wildcard $(SRC)/*.h)
-CSRC:=$(wildcard $(SRC)/*.cpp)
+CSRC:=$(wildcard $(SRC)/*.cpp $(SRC)/*.c)
 COBJ:=$(SRC:%.cpp:%.o)
 CBIN:=$(PROJ)
 
+LFLAGS+=-Wl,-O,--warn-common
 CFLAGS+=-std=c++0x -I$(SRC) -fvisibility=hidden -O2 -Wall -W -Werror
-LFLAGS+=-Wl,-O,--enable-new-dtags,--warn-common
 CTAGS?=$(shell (which ctags || echo ctags) 2> /dev/null)
 
 all: $(TAGS) bin
