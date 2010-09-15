@@ -6,15 +6,15 @@
 // Adapted from Austern 98's "Trivial Container" (p 71)
 template <class T>
 struct casagrande {
-	typedef T vtype;
+	typedef T value_type;
 
-	typedef vtype *pointer;
-	typedef const vtype *const_pointer;
-	typedef vtype &reference;
-	typedef const vtype &const_reference;
+	typedef value_type *pointer;
+	typedef const value_type *const_pointer;
+	typedef value_type &reference;
+	typedef const value_type &const_reference;
 
-	typedef vtype *iterator;
-	typedef const vtype *const_iterator;
+	typedef value_type *iterator;
+	typedef const value_type *const_iterator;
 
 	typedef ptrdiff_t difftype;
 	typedef size_t sizetype;
