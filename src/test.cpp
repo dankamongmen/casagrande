@@ -3,9 +3,18 @@
 #include <casagrande.h>
 
 // Container -- problem 1
+template <class T>
 static int
 p1(){
-	return -1;
+	unsigned count;
+
+	casagrande<T> cg;
+	typename casagrande<T>::const_iterator i = cg.begin();
+	for(count = 0 ; i != cg.end() ; ++i){
+		++count;
+	}
+	std::cout << "Iterated over " << count << " elements." << std::endl;
+	return 0;
 }
 
 // Queue -- problem 2
@@ -22,7 +31,7 @@ p3(){
 
 int main(void){
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(p1()){
+	if(p1<int>()){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
