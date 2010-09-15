@@ -20,7 +20,7 @@ all: $(TAGS) bin
 bin: $(CBIN)
 
 $(PROJ): $(CSRC) $(CINC)
-	$(CXX) $(CFLAGS) -o $@ $< $(LFLAGS)
+	$(CXX) $(CFLAGS) -o $@ $(CSRC) $(LFLAGS)
 
 test: all
 	for test in $(BIN) ; do ./$$test ; done
