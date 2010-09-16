@@ -1,9 +1,9 @@
-#ifndef CASAGRANDE_QUEUE
-#define CASAGRANDE_QUEUE
+#ifndef CASAGRANDE_STACK
+#define CASAGRANDE_STACK
 
-#include <casagrande.h>
+#include <casastack.h>
 
-template <class T, class C = casagrande<T>> class casaqueue {
+template <class T, class C = casagrande<T>> class casastack {
 private:
 	C store;
 
@@ -49,23 +49,23 @@ public:
 	}
 
 	inline void push(const value_type &val){
-		store.push_front(val);
+		store.push_back(val);
 	}
 
 	inline void push(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
+		store.push_back(ti);
 	}
 
 	inline const value_type &pop_back(){
 		return store.pop_back();
 	}
 
-	inline void push_front(const value_type &val){
-		store.push_front(val);
+	inline void push_back(const value_type &val){
+		store.push_back(val);
 	}
 
-	inline void push_front(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
+	inline void push_back(const std::initializer_list<value_type> ti){
+		store.push_back(ti);
 	}
 };
 

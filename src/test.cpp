@@ -1,8 +1,9 @@
 #include <list>
 #include <cstdlib>
 #include <iostream>
-#include <casagrande.h>
 #include <casaqueue.h>
+#include <casastack.h>
+#include <casagrande.h>
 #include <initializer_list>
 
 template <class C,class I,class T> static int
@@ -58,13 +59,11 @@ int main(void){
 		std::cerr << "Error during queue tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	/*
 	std::cout << "Performing stack tests (problem 3)..." << std::endl;
-	if(p3()){
+	if(tester<casastack<int>,casastack<int>::const_iterator,int>(il)){
 		std::cerr << "Error during stack tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	*/
 	std::cout << "All tests succeeded!" << std::endl;
 	return EXIT_SUCCESS;
 }
