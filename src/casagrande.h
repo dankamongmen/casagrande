@@ -98,12 +98,17 @@ public:
 		}
 	}
 
+	inline void push(const value_type &val){ push_back(val); }
+	inline void push(const std::initializer_list<value_type> ti){ push_back(ti); }
+
 	inline const value_type &pop_back(){
 		if(elems){
 			return &block[--elems];
 		}
 		throw std::range_error();
 	}
+
+	inline const value_type &pop(){ return pop_back(); }
 
 	inline void push_front(const value_type &val){
 		T *tmp;

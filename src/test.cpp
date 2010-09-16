@@ -1,7 +1,8 @@
 #include <list>
+#include <cstdlib>
 #include <iostream>
-#include <stdlib.h>
 #include <casagrande.h>
+#include <casaqueue.h>
 #include <initializer_list>
 
 template <class C,class I,class T> static int
@@ -9,7 +10,7 @@ tester(const std::initializer_list<T> il){
 	unsigned count = 0;
 
 	C cg,ccg;
-	cg.push_back(il);
+	cg.push(il);
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
@@ -52,12 +53,12 @@ int main(void){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	/*
 	std::cout << "Performing queue tests (problem 2)..." << std::endl;
-	if(p2()){
+	if(tester<casaqueue<int>,casaqueue<int>::const_iterator,int>(il)){
 		std::cerr << "Error during queue tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
+	/*
 	std::cout << "Performing stack tests (problem 3)..." << std::endl;
 	if(p3()){
 		std::cerr << "Error during stack tests!" << std::endl;
