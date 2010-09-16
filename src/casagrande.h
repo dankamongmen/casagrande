@@ -113,7 +113,7 @@ public:
 	inline void push_front(const value_type &val){
 		T *tmp;
 
-		if(elems == telems){
+		if(elems >= telems){
 			if((tmp = (T *)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
 				throw std::bad_alloc();
 			}
@@ -123,7 +123,8 @@ public:
 		if(elems){
 			memmove(block + 1,block,sizeof(*block) * elems);
 		}
-		block[elems++] = val;
+		++elems;
+		block[0] = val;
 	}
 
 	inline void push_front(const std::initializer_list<value_type> ti){
