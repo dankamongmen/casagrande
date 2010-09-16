@@ -13,7 +13,16 @@ class casagrande {
 
 public:
 	casagrande(){ elems = 0; block = 0; }
-	~casagrande(){}
+
+	// Copy constructor
+	casagrande(const casagrande &src){
+		if((block = (T *)malloc(sizeof(*block) * src.elems)) == 0){
+			throw std::bad_alloc();
+		}
+		elems = src.elems;
+	}
+
+	~casagrande(){ free(block); }
 
 	typedef T value_type;
 
@@ -56,7 +65,7 @@ public:
 	void push_back(const value_type &val){
 		T *tmp;
 
-		if((tmp = (T*)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
+		if((tmp = (T *)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
 			throw std::bad_alloc();
 		}
 		block = tmp;

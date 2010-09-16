@@ -19,6 +19,17 @@ tester(const std::initializer_list<T> il){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
 		return -1;
 	}
+	C dg = cg; // test copy constructor
+	count = 0;
+	for(I i = dg.begin() ; i != dg.end() ; ++i){
+		std::cout << "Element #" << count << ": " << *i << std::endl;
+		++count;
+	}
+	std::cout << "Iterated over " << count << " elements." << std::endl;
+	if(count != il.size()){
+		std::cerr << "Expected " << il.size() << " elements." << std::endl;
+		return -1;
+	}
 	return 0;
 }
 
