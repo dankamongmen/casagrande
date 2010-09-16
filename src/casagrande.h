@@ -9,11 +9,11 @@
 // Adapted from Austern 98's "Trivial Container" (p 71)
 template <class T>
 class casagrande {
-	unsigned elems;
-	T *block; // FIXME
+	unsigned elems,telems;
+	T *block;
 
 public:
-	casagrande(){ elems = 0; block = 0; }
+	casagrande(){ telems = elems = 0; block = 0; }
 
 	// Copy constructor
 	casagrande(const casagrande &src){
@@ -21,6 +21,7 @@ public:
 			throw std::bad_alloc();
 		}
 		memcpy(block,src.block,sizeof(*block) * src.elems);
+		telems = src.telems;
 		elems = src.elems;
 	}
 
@@ -49,11 +50,12 @@ public:
 		block = tmp;
 		memcpy(block,src.block,sizeof(*block) * src.elems);
 		elems = src.elems;
+		telems = src.telems;
 		return *this;
 	}
 
 	reference operator[](size_type n){
-		return &block[n]; // FIXME
+		return &block[n];
 	}
 
 	const_reference operator[](size_type n) const;
@@ -64,30 +66,31 @@ public:
 	reference back() { return operator[](elems); }
 	const_reference back() const { return operator[](elems); }
 
-	iterator begin(){ return &block[0]; } // FIXME
-	const_iterator begin() const { return &block[0]; } // FIXME
+	iterator begin(){ return &block[0]; }
+	const_iterator begin() const { return &block[0]; }
 
-	// FIXME
 	iterator end(){ return &block[elems]; }
-	const_iterator end() const { return &block[elems]; } // FIXME
+	const_iterator end() const { return &block[elems]; }
 
 	size_type size() const { return elems; }
 	bool empty() const { return !elems; }
 
-	// FIXME
-	size_type max_size() const { return elems; }
+	size_type max_size() const { return telems; }
 
-	void push_back(const value_type &val){
+	inline void push_back(const value_type &val){
 		T *tmp;
 
-		if((tmp = (T *)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
-			throw std::bad_alloc();
+		if(elems == telems){
+			if((tmp = (T *)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
+				throw std::bad_alloc();
+			}
+			telems = elems + 1;
 		}
 		block = tmp;
 		block[elems++] = val;
 	}
 
-	void push_back(const std::initializer_list<value_type> ti){
+	inline void push_back(const std::initializer_list<value_type> ti){
 		const_iterator cil;
 
 		for(cil = ti.begin() ; cil != ti.end() ; ++cil){
@@ -95,7 +98,48 @@ public:
 		}
 	}
 
-	void swap(casagrande &){}
+	inline const value_type &pop_back(){
+		if(elems){
+			return &block[--elems];
+		}
+		throw std::range_error();
+	}
+
+	inline void push_front(const value_type &val){
+		T *tmp;
+
+		if(elems == telems){
+			if((tmp = (T *)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
+				throw std::bad_alloc();
+			}
+			telems = elems + 1;
+		}
+		block = tmp;
+		if(elems){
+			memmove(block + 1,block,sizeof(*block) * elems);
+		}
+		block[elems++] = val;
+	}
+
+	inline void push_front(const std::initializer_list<value_type> ti){
+		const_iterator cil;
+
+		for(cil = ti.begin() ; cil != ti.end() ; ++cil){
+			push_front(*cil);
+		}
+	}
+
+	inline const value_type &pop_front(){
+		if(elems){
+			value_type *r = &block[0];
+			if(--elems){ // FIXME ugh horrible
+				memmove(block,block + 1,sizeof(*block) * elems);
+			}
+			return r;
+		}
+		throw std::range_error();
+	}
+
 };
 
 #endif
