@@ -10,6 +10,7 @@
 template <class T>
 class casagrande {
 	unsigned elems;
+	T block[10]; // FIXME
 
 public:
 	casagrande(){ elems = 0; }
@@ -30,7 +31,7 @@ public:
 
 	reference operator[](size_type n){
 		std::cout << "n: " << n << std::endl;
-		return 0; // FIXME
+		return &block[n];
 	}
 
 	const_reference operator[](size_type n) const;
@@ -38,15 +39,15 @@ public:
 	reference front() { return operator[](0); }
 	const_reference front() const { return operator[](0); }
 
-	reference back() { return operator[](elems - 1); }
-	const_reference back() const { return operator[](elems - 1); }
+	reference back() { return operator[](elems); }
+	const_reference back() const { return operator[](elems); }
 
-	iterator begin(){ return 0; } // FIXME
-	const_iterator begin() const { return 0; } // FIXME
+	iterator begin(){ return &block[0]; } // FIXME
+	const_iterator begin() const { return &block[0]; } // FIXME
 
 	// FIXME
-	iterator end(){ return 0; }
-	const_iterator end() const { return 0; }
+	iterator end(){ return &block[elems]; }
+	const_iterator end() const { return &block[elems]; } // FIXME
 
 	size_type size() const { return elems; }
 	bool empty() const { return !elems; }
@@ -56,6 +57,7 @@ public:
 
 	iterator insert(const_iterator ci,const value_type &val){
 		if(ci){
+			++elems;
 			// FIXME
 			std::cout << "val: " << val << std::endl;
 		}
