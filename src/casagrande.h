@@ -1,6 +1,7 @@
 #ifndef CASAGRANDE_CASAGRANDE
 #define CASAGRANDE_CASAGRANDE
 
+#include <cstring>
 #include <cstddef>
 #include <stdexcept>
 #include <initializer_list>
@@ -19,6 +20,7 @@ public:
 		if((block = (T *)malloc(sizeof(*block) * src.elems)) == 0){
 			throw std::bad_alloc();
 		}
+		memcpy(block,src.block,sizeof(*block) * src.elems);
 		elems = src.elems;
 	}
 
@@ -45,6 +47,7 @@ public:
 		}
 		free(block);
 		block = tmp;
+		memcpy(block,src.block,sizeof(*block) * src.elems);
 		elems = src.elems;
 		return *this;
 	}
