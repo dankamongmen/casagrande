@@ -2,16 +2,17 @@
 #define CASAGRANDE_CASAGRANDE
 
 #include <cstddef>
+#include <stdexcept>
 #include <initializer_list>
 
 // Adapted from Austern 98's "Trivial Container" (p 71)
 template <class T>
 class casagrande {
 	unsigned elems;
-	T block[10]; // FIXME
+	T *block; // FIXME
 
 public:
-	casagrande(){ elems = 0; }
+	casagrande(){ elems = 0; block = 0; }
 	~casagrande(){}
 
 	typedef T value_type;
@@ -52,21 +53,21 @@ public:
 	// FIXME
 	size_type max_size() const { return elems; }
 
-	iterator insert(const_iterator ci,const value_type &val){
-		// FIXME doesn't honor ci, just uses elem...
-		if(ci){
-			block[elems++] = val;
+	void push_back(const value_type &val){
+		T *tmp;
+
+		if((tmp = (T*)realloc(block,sizeof(*tmp) * (elems + 1))) == 0){
+			throw std::bad_alloc();
 		}
-		return 0;
+		block = tmp;
+		block[elems++] = val;
 	}
 
-	void insert(const_iterator,size_type,const value_type &);
-
-	void insert(const_iterator ci,const std::initializer_list<value_type> ti){
+	void push_back(const std::initializer_list<value_type> ti){
 		const_iterator cil;
 
 		for(cil = ti.begin() ; cil != ti.end() ; ++cil){
-			insert(ci,*cil);
+			push_back(*cil);
 		}
 	}
 

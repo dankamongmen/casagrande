@@ -6,12 +6,11 @@
 
 template <class C,class I,class T> static int
 tester(const std::initializer_list<T> il){
-	unsigned count;
+	unsigned count = 0;
 
 	C cg;
-	I i = cg.begin();
-	cg.insert(cg.begin(), il);
-	for(count = 0 ; i != cg.end() ; ++i){
+	cg.push_back(il);
+	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
 	}
@@ -24,7 +23,7 @@ tester(const std::initializer_list<T> il){
 }
 
 int main(void){
-	const std::initializer_list<int> il = {0, 1, 2, 3};
+	const std::initializer_list<int> il = {0, 1, 2, 3, 4, 9, 8, 7, 6};
 
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
 	if(tester<casagrande<int>,casagrande<int>::const_iterator,int>(il)){
