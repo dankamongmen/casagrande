@@ -37,6 +37,18 @@ public:
 	typedef ptrdiff_t difference_type;
 	typedef size_t size_type;
 
+	casagrande & operator=(const casagrande &src){
+		T *tmp;
+
+		if((tmp = (T *)malloc(sizeof(*block) * src.elems)) == 0){
+			throw std::bad_alloc();
+		}
+		free(block);
+		block = tmp;
+		elems = src.elems;
+		return *this;
+	}
+
 	reference operator[](size_type n){
 		return &block[n]; // FIXME
 	}

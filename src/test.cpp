@@ -8,7 +8,7 @@ template <class C,class I,class T> static int
 tester(const std::initializer_list<T> il){
 	unsigned count = 0;
 
-	C cg;
+	C cg,ccg;
 	cg.push_back(il);
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
@@ -22,6 +22,17 @@ tester(const std::initializer_list<T> il){
 	C dg = cg; // test copy constructor
 	count = 0;
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
+		std::cout << "Element #" << count << ": " << *i << std::endl;
+		++count;
+	}
+	std::cout << "Iterated over " << count << " elements." << std::endl;
+	if(count != il.size()){
+		std::cerr << "Expected " << il.size() << " elements." << std::endl;
+		return -1;
+	}
+	ccg = cg; // test object assignment
+	count = 0;
+	for(I i = ccg.begin() ; i != ccg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
 	}
