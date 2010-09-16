@@ -22,6 +22,9 @@ tester(const std::initializer_list<T> il){
 		return -1;
 	}
 	C dg = cg; // test copy constructor
+	for(unsigned z = 0 ; z < count ; ++z){
+		std::cout << "Pop #" << z << ": " << cg.pop() << std::endl;
+	}
 	count = 0;
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
@@ -32,7 +35,7 @@ tester(const std::initializer_list<T> il){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
 		return -1;
 	}
-	ccg = cg; // test object assignment
+	ccg = dg; // test object assignment
 	count = 0;
 	for(I i = ccg.begin() ; i != ccg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;

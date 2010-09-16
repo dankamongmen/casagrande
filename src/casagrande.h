@@ -17,10 +17,15 @@ public:
 
 	// Copy constructor
 	casagrande(const casagrande &src){
-		if((block = (T *)malloc(sizeof(*block) * src.elems)) == 0){
-			throw std::bad_alloc();
+		if(src.elems){
+			// allocate for telems, copy only elems
+			if((block = (T *)malloc(sizeof(*block) * src.telems)) == 0){
+				throw std::bad_alloc();
+			}
+			memcpy(block,src.block,sizeof(*block) * src.elems);
+		}else{
+			block = 0;
 		}
-		memcpy(block,src.block,sizeof(*block) * src.elems);
 		telems = src.telems;
 		elems = src.elems;
 	}
@@ -103,9 +108,9 @@ public:
 
 	inline const value_type &pop_back(){
 		if(elems){
-			return &block[--elems];
+			return block[--elems];
 		}
-		throw std::range_error();
+		throw std::range_error("Container underflow");
 	}
 
 	inline const value_type &pop(){ return pop_back(); }
