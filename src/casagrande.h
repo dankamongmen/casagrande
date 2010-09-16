@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <initializer_list>
 
-#include <iostream>
-
 // Adapted from Austern 98's "Trivial Container" (p 71)
 template <class T>
 class casagrande {
@@ -30,8 +28,7 @@ public:
 	typedef size_t size_type;
 
 	reference operator[](size_type n){
-		std::cout << "n: " << n << std::endl;
-		return &block[n];
+		return &block[n]; // FIXME
 	}
 
 	const_reference operator[](size_type n) const;
@@ -56,10 +53,9 @@ public:
 	size_type max_size() const { return elems; }
 
 	iterator insert(const_iterator ci,const value_type &val){
+		// FIXME doesn't honor ci, just uses elem...
 		if(ci){
-			++elems;
-			// FIXME
-			std::cout << "val: " << val << std::endl;
+			block[elems++] = val;
 		}
 		return 0;
 	}
