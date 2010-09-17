@@ -23,7 +23,7 @@ tester(const std::initializer_list<T> il){
 	}
 	C dg = cg; // test copy constructor
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "CG Pop #" << z << ": " << cg.pop() << std::endl;
+		std::cout << "Pop #" << z << ": " << cg.pop() << std::endl;
 	}
 	count = 0;
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
@@ -37,7 +37,7 @@ tester(const std::initializer_list<T> il){
 	}
 	ccg = dg; // test object assignment
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "Queue Pop #" << z << ": " << dg.pop() << std::endl;
+		std::cout << "Pop #" << z << ": " << dg.pop() << std::endl;
 	}
 	count = 0;
 	for(I i = ccg.begin() ; i != ccg.end() ; ++i){
