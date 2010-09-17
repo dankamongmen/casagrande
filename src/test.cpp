@@ -50,7 +50,7 @@ tester(const std::initializer_list<T> il){
 		return -1;
 	}
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "Stack Pop #" << z << ": " << ccg.pop() << std::endl;
+		std::cout << "Pop #" << z << ": " << ccg.pop() << std::endl;
 	}
 	return 0;
 }
@@ -63,12 +63,12 @@ int main(void){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	std::cout << "Performing queue tests (problem 2)..." << std::endl;
+	std::cout << std::endl << "Performing queue tests (problem 2)..." << std::endl;
 	if(tester<casaqueue<int>,casaqueue<int>::const_iterator,int>(il)){
 		std::cerr << "Error during queue tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	std::cout << "Performing stack tests (problem 3)..." << std::endl;
+	std::cout << std::endl << "Performing stack tests (problem 3)..." << std::endl;
 	if(tester<casastack<int>,casastack<int>::const_iterator,int>(il)){
 		std::cerr << "Error during stack tests!" << std::endl;
 		return EXIT_FAILURE;

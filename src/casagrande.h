@@ -154,7 +154,7 @@ public:
 			}
 			return r;
 		}
-		throw std::range_error();
+		throw std::range_error("Container underflow");
 	}
 
 };
