@@ -48,12 +48,18 @@ public:
 	casagrande & operator=(const casagrande &src){
 		T *tmp;
 
-		if((tmp = (T *)malloc(sizeof(*block) * src.elems)) == 0){
-			throw std::bad_alloc();
+		if(src.elems){
+			if((tmp = (T *)malloc(sizeof(*block) * src.elems)) == 0){
+				throw std::bad_alloc();
+			}
+		}else{
+			tmp = 0;
 		}
 		free(block);
 		block = tmp;
-		memcpy(block,src.block,sizeof(*block) * src.elems);
+		if(src.elems){
+			memcpy(block,src.block,sizeof(*block) * src.elems);
+		}
 		elems = src.elems;
 		telems = src.telems;
 		return *this;
