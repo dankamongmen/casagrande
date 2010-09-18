@@ -7,7 +7,7 @@ TAGS:=.tags
 PROJ:=casagrande
 
 CINC:=$(wildcard $(SRC)/*.h)
-CSRC:=$(wildcard $(SRC)/*.cpp $(SRC)/*.c)
+CSRC:=$(wildcard $(SRC)/*.cpp)
 COBJ:=$(SRC:%.cpp:%.o)
 CBIN:=$(PROJ)
 
