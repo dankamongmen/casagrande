@@ -23,7 +23,10 @@ $(PROJ): $(CSRC) $(CINC)
 	$(CXX) $(CFLAGS) -o $@ $(CSRC) $(LFLAGS)
 
 test: all
+	for test in $(CBIN) ; do \
+		valgrind --tool=memcheck --leak-check=full ./skiplist ; done
 	for test in $(CBIN) ; do ./$$test ; done
+
 
 $(TAGS): $(CSRC) $(CINC)
 	$(CTAGS) -o $@ $^
