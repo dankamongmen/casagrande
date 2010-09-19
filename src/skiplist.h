@@ -91,8 +91,8 @@ Skipnode<T> *sn;
 };
 
 private:
-Skipnode<T> * head;
-Skipnode<T> ** link;
+Skipnode<T> *head;
+Skipnode<T> **link;
 
 public:
 Skiplist(){
@@ -134,12 +134,11 @@ T& pop(){
 	while((*prev)->ptrat(0)){
 		prev = (*prev)->lnptrat(0);
 	}
-	//if(prev == &head){
-	//	head = 0;
-	//}
-	link = prev;
+	if((link = prev) == &head){
+		link = &head;
+	}
 	T& ret = ***prev;
-	delete(*prev);
+	//delete(*prev);
 	*prev = 0;
 	return ret;
 }
@@ -147,11 +146,7 @@ T& pop(){
 void push(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
 	*link = sn; // FIXME
-	if(link == &head){
-		head = *link;
-	}
 	link = sn->lnptrat(0);
-	std::cout << "pushed: " << ref << std::endl;
 }
 
 void push(const std::initializer_list<T> il){
