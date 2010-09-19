@@ -59,15 +59,20 @@ tester(const std::initializer_list<T> il){
 }
 
 int main(void){
-	const std::initializer_list<int> il = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5};
+	const std::initializer_list<int> zl = {};
+	const std::initializer_list<int> il = {2010, 1, 2, 3, 4, 9, 8, 7, 6, 5};
 	const std::initializer_list<int> ml = {1911};
 
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(tester<Skiplist<int>,Skiplist<int>::const_iterator,int>(ml)){
+	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(zl)){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
-	if(tester<Skiplist<int>,Skiplist<int>::const_iterator,int>(il)){
+	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(ml)){
+		std::cerr << "Error during deque tests!" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(il)){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
