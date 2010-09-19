@@ -1,6 +1,7 @@
 #ifndef SRC_SKIPLIST
 #define SRC_SKIPLIST
 
+#include <stdexcept>
 #include <initializer_list>
 
 #include <iostream>
@@ -25,7 +26,7 @@ Skipnode(int level,const T& obj){
 	delete[] ptrs;
 }
 
-T& value(){
+T& operator*(){
 	return obj;
 }
 
@@ -46,6 +47,49 @@ friend std::ostream& operator<<(std::ostream& out,const Skipnode& sn){
 template <class T>
 class Skiplist {
 
+class Skiperator{
+public:
+Skiperator(Skipnode<T> *p) : sn(p) {}
+~Skiperator() {}
+
+Skiperator& operator=(const Skiperator& other){
+	sn = other.sn;
+	return *this;
+}
+
+bool operator==(const Skiperator& other){
+	return sn == other.sn;
+}
+
+bool operator!=(const Skiperator& other) const {
+	return sn != other.sn;
+}
+
+Skiperator& operator++(){
+	if(sn != NULL){
+		sn = sn->ptrat(0);
+	}
+	return *this;
+}
+
+Skiperator& operator++(int){
+	Skiperator tmp(*this);
+	++(*this);
+	return tmp;
+}
+
+T& operator*() const {
+	return **sn;
+}
+
+T* operator->(){
+	return &*(Skiplist<T>::Skiperator)*this;
+}
+
+private:
+Skipnode<T> *sn;
+};
+
 private:
 Skipnode<T> * head;
 Skipnode<T> ** link;
@@ -65,42 +109,47 @@ Skiplist(){
 	}
 }
 
-typedef Skipnode<T> *iterator;
-typedef const Skipnode<T> *const_iterator;
+typedef Skiperator iterator;
 
 static const int levels = 1; // FIXME decay to linked list
 
 iterator begin(){
-	return 0; // FIXME
-}
-
-const_iterator begin() const {
-	return 0; // FIXME
+	return head;
 }
 
 iterator end(){
-	// FIXME
-	return 0;
-}
-
-const_iterator end() const {
-	// FIXME
 	return 0;
 }
 
 T& operator[](const int idx){
-	// FIXME
-	return head.value();
+	return *head;
 }
 
 T& pop(){
-	// FIXME
-	return head->value();
+	Skipnode<T> **prev;
+
+	if(*(prev = &head) == 0){
+		throw std::range_error("underflow");
+	}
+	while((*prev)->ptrat(0)){
+		prev = (*prev)->lnptrat(0);
+	}
+	//if(prev == &head){
+	//	head = 0;
+	//}
+	link = prev;
+	T& ret = ***prev;
+	delete(*prev);
+	*prev = 0;
+	return ret;
 }
 
 void push(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
 	*link = sn; // FIXME
+	if(link == &head){
+		head = *link;
+	}
 	link = sn->lnptrat(0);
 	std::cout << "pushed: " << ref << std::endl;
 }
@@ -117,6 +166,9 @@ friend std::ostream&  operator<<(std::ostream&  out,const Skiplist& sl){
 	Skipnode<T> *sn;
 
 	for(sn = sl.head ; sn ; sn = sn->ptrat(0)){
+		if(sn != sl.head){
+			out << ", ";
+		}
 		out << *sn;
 	}
 	return out;
