@@ -55,8 +55,8 @@ Skiplist(){
 ~Skiplist(){
 	Skipnode<T> *sn;
 
-	while( (sn = *link) ){
-		*link = sn->ptrat(0);
+	while( (sn = head) ){
+		head = sn->ptrat(0);
 		delete sn;
 	}
 }
