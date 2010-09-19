@@ -1,7 +1,7 @@
 #include <list>
 #include <cstdlib>
 #include <iostream>
-#include <container.h>
+#include <skiplist.h>
 #include <casaqueue.h>
 #include <casastack.h>
 #include <casagrande.h>
@@ -60,7 +60,7 @@ int main(void){
 	const std::initializer_list<int> il = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5};
 
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(tester<Container<int>,Container<int>::const_iterator,int>(il)){
+	if(tester<Skiplist<int>,Skiplist<int>::const_iterator,int>(il)){
 		std::cerr << "Error during deque tests!" << std::endl;
 		return EXIT_FAILURE;
 	}

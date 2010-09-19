@@ -1,12 +1,12 @@
-#ifndef SRC_CONTAINER
-#define SRC_CONTAINER
+#ifndef SRC_SKIPLIST
+#define SRC_SKIPLIST
 
 #include <initializer_list>
 
 #include <iostream>
 
 template <class T>
-class Container {
+class Skiplist {
 
 public:
 	typedef T *iterator;
@@ -32,7 +32,12 @@ const_iterator end() const {
 	return 0;
 }
 
-const T& pop(){
+T& operator[](const int idx){
+	// FIXME
+	return fixme;
+}
+
+T& pop(){
 	// FIXME
 	return fixme;
 }
