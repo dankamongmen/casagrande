@@ -9,28 +9,42 @@ template <class T>
 class Skipnode {
 
 private:
-	T obj;
-	Skipnode<T> **ptrs;
+T obj;
+Skipnode<T> **ptrs;
 
 public:
-	Skipnode(int level,const T &obj){
-		ptrs = new Skipnode<T> *[level + 1];
-		this->obj = obj;
-	}
+Skipnode(int level,const T &obj){
+	ptrs = new Skipnode<T> *[level + 1];
+	this->obj = obj;
+}
 
-	~Skipnode(){
-		delete[] ptrs;
-	}
+~Skipnode(){
+	delete[] ptrs;
+}
+
+T & value(){
+	return obj;
+}
+
+friend std::ostream & operator<<(std::ostream & out,const Skipnode &sn){
+	out << sn.obj;
+	return out;
+}
+
 };
 
 template <class T>
 class Skiplist {
 
 public:
-	typedef T *iterator;
-	typedef const T *const_iterator;
+Skiplist(){
+	head = 0;
+}
 
-	static const int levels = 1; // FIXME decay to linked list
+typedef T *iterator;
+typedef const T *const_iterator;
+
+static const int levels = 1; // FIXME decay to linked list
 
 iterator begin(){
 	// FIXME
@@ -54,12 +68,12 @@ const_iterator end() const {
 
 T& operator[](const int idx){
 	// FIXME
-	return fixme;
+	return head.value();
 }
 
 T& pop(){
 	// FIXME
-	return fixme;
+	return head->value();
 }
 
 void push(const T &ref){
@@ -77,12 +91,14 @@ void push(const std::initializer_list<T> il){
 }
 
 friend std::ostream & operator<<(std::ostream & out,const Skiplist &sl){
-	out << sl.fixme; // FIXME
+	if(sl.head){
+		out << sl.head; // FIXME
+	}
 	return out;
 }
 
 private:
-	T fixme;
+	Skipnode<T> * head;
 
 };
 
