@@ -4,7 +4,7 @@
 
 SRC:=src
 TAGS:=.tags
-PROJ:=casagrande
+PROJ:=skiplist
 
 CINC:=$(wildcard $(SRC)/*.h)
 CSRC:=$(wildcard $(SRC)/*.cpp)
