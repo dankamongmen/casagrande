@@ -6,11 +6,31 @@
 #include <iostream>
 
 template <class T>
+class Skipnode {
+
+private:
+	T obj;
+	Skipnode<T> **ptrs;
+
+public:
+	Skipnode(int level,const T &obj){
+		ptrs = new Skipnode<T> *[level + 1];
+		this->obj = obj;
+	}
+
+	~Skipnode(){
+		delete[] ptrs;
+	}
+};
+
+template <class T>
 class Skiplist {
 
 public:
 	typedef T *iterator;
 	typedef const T *const_iterator;
+
+	static const int levels = 1; // FIXME decay to linked list
 
 iterator begin(){
 	// FIXME
@@ -43,6 +63,7 @@ T& pop(){
 }
 
 void push(const T &ref){
+	Skipnode<T>(levels,ref);
 	// FIXME
 	std::cout << "pushed: " << ref << std::endl;
 }
@@ -53,6 +74,11 @@ void push(const std::initializer_list<T> il){
 	for(cil = il.begin() ; cil != il.end() ; ++cil){
 		push(*cil);
 	}
+}
+
+friend std::ostream & operator<<(std::ostream & out,const Skiplist &sl){
+	out << sl.fixme; // FIXME
+	return out;
 }
 
 private:

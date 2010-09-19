@@ -13,6 +13,8 @@ tester(const std::initializer_list<T> il){
 
 	C cg,ccg;
 	cg.push(il);
+	std::cout << "<< operator-----------" << std::endl << cg << std::endl
+		<< "<< operator ends------" << std::endl;
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
