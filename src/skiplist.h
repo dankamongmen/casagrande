@@ -15,6 +15,9 @@ Skipnode<T> **ptrs;
 public:
 Skipnode(int level,const T &obj){
 	ptrs = new Skipnode<T> *[level + 1];
+	do{
+		ptrs[level] = 0;
+	}while(level--);
 	this->obj = obj;
 }
 
@@ -26,9 +29,16 @@ T & value(){
 	return obj;
 }
 
+Skipnode<T> * ptrat(int level){
+	return ptrs[level];
+}
+
+Skipnode<T> ** lnptrat(int level){
+	return &ptrs[level];
+}
+
 friend std::ostream & operator<<(std::ostream & out,const Skipnode &sn){
-	out << sn.obj;
-	return out;
+	return out << sn.obj;
 }
 
 };
@@ -39,6 +49,16 @@ class Skiplist {
 public:
 Skiplist(){
 	head = 0;
+	link = &head;
+}
+
+~Skiplist(){
+	Skipnode<T> *sn;
+
+	while( (sn = *link) ){
+		*link = sn->ptrat(0);
+		delete sn;
+	}
 }
 
 typedef T *iterator;
@@ -47,13 +67,11 @@ typedef const T *const_iterator;
 static const int levels = 1; // FIXME decay to linked list
 
 iterator begin(){
-	// FIXME
-	return 0;
+	return 0; // FIXME
 }
 
 const_iterator begin() const {
-	// FIXME
-	return 0;
+	return 0; // FIXME
 }
 
 iterator end(){
@@ -77,8 +95,9 @@ T& pop(){
 }
 
 void push(const T &ref){
-	Skipnode<T>(levels,ref);
-	// FIXME
+	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
+	*link = sn; // FIXME
+	link = sn->lnptrat(0);
 	std::cout << "pushed: " << ref << std::endl;
 }
 
@@ -91,14 +110,17 @@ void push(const std::initializer_list<T> il){
 }
 
 friend std::ostream & operator<<(std::ostream & out,const Skiplist &sl){
-	if(sl.head){
-		out << sl.head; // FIXME
+	Skipnode<T> *sn;
+
+	for(sn = sl.head ; sn ; sn = sn->ptrat(0)){
+		out << *sn;
 	}
 	return out;
 }
 
 private:
 	Skipnode<T> * head;
+	Skipnode<T> ** link;
 
 };
 
