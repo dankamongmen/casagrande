@@ -109,6 +109,17 @@ Skiplist(){
 	}
 }
 
+// Copy constructor
+Skiplist(const Skiplist& src){
+	Skipnode<T> *sn;
+
+	head = 0;
+	link = &head;
+	for(sn = src.head ; sn ; sn = sn->ptrat(0)){
+		push(**sn);
+	}
+}
+
 typedef Skiperator iterator;
 
 static const int levels = 1; // FIXME decay to linked list
