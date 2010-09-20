@@ -30,6 +30,10 @@ T& operator*(){
 	return obj;
 }
 
+const T& operator*() const {
+	return obj;
+}
+
 Skipnode<T> *ptrat(int level){
 	return ptrs[level];
 }
@@ -76,8 +80,45 @@ T& operator*() const {
 	return **sn;
 }
 
-T* operator->(){
+T* operator->() const {
 	return &*(Skiplist<T>::SkipIterator)*this;
+}
+
+private:
+Skipnode<T> *sn;
+};
+
+class ConstSkipIterator{
+public:
+ConstSkipIterator(Skipnode<T> *p) : sn(p) {}
+~ConstSkipIterator() {}
+
+ConstSkipIterator& operator=(const ConstSkipIterator& other){
+	sn = other.sn;
+	return *this;
+}
+
+bool operator==(const ConstSkipIterator& other) const {
+	return sn == other.sn;
+}
+
+bool operator!=(const ConstSkipIterator& other) const {
+	return sn != other.sn;
+}
+
+ConstSkipIterator& operator++(){
+	if(sn != NULL){
+		sn = sn->ptrat(0);
+	}
+	return *this;
+}
+
+const T& operator*() const {
+	return **sn;
+}
+
+T* operator->() const {
+	return &*(Skiplist<T>::ConstSkipIterator)*this;
 }
 
 private:
@@ -115,7 +156,7 @@ Skiplist(const Skiplist& src){
 	nodes = 0;
 	head = 0;
 	link = &head;
-	for(iterator i = src.begin() ; i != src.end() ; ++i){
+	for(const_iterator i = src.begin() ; i != src.end() ; ++i){
 		push_back(*i);
 	}
 }
@@ -126,7 +167,7 @@ Skiplist& operator=(const Skiplist& src){
 	Skipnode<T> **olink = &ohead;
 
 	try{
-		for(iterator i = src.begin() ; i != src.end() ; ++i){
+		for(const_iterator i = src.begin() ; i != src.end() ; ++i){
 			Skipnode<T> *tmp = new Skipnode<T>(levels,*i);
 			*olink = tmp;
 			olink = tmp->lnptrat(0);
@@ -147,7 +188,7 @@ size_t size(){
 }
 
 typedef SkipIterator iterator;
-typedef const SkipIterator const_iterator;
+typedef ConstSkipIterator const_iterator;
 
 iterator begin(){
 	return iterator(head);
