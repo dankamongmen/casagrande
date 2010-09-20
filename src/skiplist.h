@@ -228,7 +228,7 @@ void push_back(const std::initializer_list<T> il){
 
 void push_front(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
-	if((sn->ptrat(0) = head) == 0){
+	if((*sn->lnptrat(0) = head) == 0){
 		link = sn->lnptrat(0);
 	}
 	head = sn;
@@ -244,15 +244,15 @@ void push_front(const std::initializer_list<T> il){
 }
 
 T& pop(){
-	return pop_front();
+	return pop_back();
 }
 
 void push(const T& ref){
-	return push_back(ref);
+	return push_front(ref);
 }
 
 void push(const std::initializer_list<T> il){
-	return push_back(il);
+	return push_front(il);
 }
 
 friend std::ostream&  operator<<(std::ostream&  out,const Skiplist& sl){
