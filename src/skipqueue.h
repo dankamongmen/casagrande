@@ -3,7 +3,7 @@
 
 #include <skiplist.h>
 
-template <class T, class C = Skiplist<T>> class Skipqueue {
+template <class T, class C = Skiplist<T> > class Skipqueue {
 private:
 C store;
 
