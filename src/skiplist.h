@@ -257,7 +257,9 @@ void pop_front(){
 	if(*(prev = &head) == 0){
 		throw std::range_error("underflow");
 	}
-	link = prev;
+	if(link == head->lnptrat(0)){
+		link = &head;
+	}
 	tmp = *prev;
 	*prev = (*prev)->ptrat(0);
 	delete(tmp);

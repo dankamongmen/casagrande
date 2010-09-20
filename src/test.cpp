@@ -26,10 +26,12 @@ static int qtester(const std::initializer_list<T> il){
 		}
 	}
 	*/
+	std::cout << "Base elements...";
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
-		std::cout << "Element #" << count << ": " << *i << std::endl;
+		std::cout << *i << " ";
 		++count;
 	}
+	std::cout << std::endl;
 	std::cout << "Iterated over " << count << " elements." << std::endl;
 	if(count != il.size()){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
@@ -45,7 +47,7 @@ static int qtester(const std::initializer_list<T> il){
 	std::cout << std::endl;
 
 	count = 0;
-	std::cout << "Base elements...";
+	std::cout << "Copy elements...";
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
 		std::cout << *i << " ";
 		++count;
