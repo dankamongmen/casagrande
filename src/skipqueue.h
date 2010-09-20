@@ -10,16 +10,16 @@ C store;
 public:
 typedef T value_type;
 
-typedef value_type *pointer;
-typedef const value_type *const_pointer;
-typedef value_type &reference;
-typedef const value_type &const_reference;
+typedef typename C::pointer pointer;
+typedef typename C::const_pointer const_pointer;
+typedef typename C::reference reference;
+typedef typename C::const_reference const_reference;
 
 typedef typename C::iterator iterator;
 typedef typename C::const_iterator const_iterator;
 
-typedef ptrdiff_t difference_type;
-typedef size_t size_type;
+typedef typename C::difference_type difference_type;
+typedef typename C::size_type size_type;
 
 reference front() { return store.front(); }
 const_reference front() const { return store.front(); }
