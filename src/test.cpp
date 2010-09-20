@@ -34,39 +34,47 @@ tester(const std::initializer_list<T> il){
 		return -1;
 	}
 	C dg = cg; // test copy constructor
+	ccg = cg; // test object assignment
 	std::cout << "Popping base...";
 	for(unsigned z = 0 ; z < count ; ++z){
 		std::cout << cg.front() << " ";
 		cg.pop();
 	}
 	std::cout << std::endl;
+
 	count = 0;
+	std::cout << "Base elements...";
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
-		std::cout << "Element #" << count << ": " << *i << std::endl;
+		std::cout << *i << " ";
 		++count;
 	}
+	std::cout << std::endl;
 	std::cout << "Iterated over " << count << " elements." << std::endl;
 	if(count != il.size()){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
 		return -1;
 	}
-	ccg = dg; // test object assignment
+
 	std::cout << "Popping copy...";
 	for(unsigned z = 0 ; z < count ; ++z){
 		std::cout << dg.front() << " ";
 		dg.pop();
 	}
 	std::cout << std::endl;
+
 	count = 0;
+	std::cout << "Copy elements...";
 	for(I i = ccg.begin() ; i != ccg.end() ; ++i){
-		std::cout << "Element #" << count << ": " << *i << std::endl;
+		std::cout << *i << " ";
 		++count;
 	}
+	std::cout << std::endl;
 	std::cout << "Iterated over " << count << " elements." << std::endl;
 	if(count != il.size()){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
 		return -1;
 	}
+
 	std::cout << "Popping assigned...";
 	for(unsigned z = 0 ; z < count ; ++z){
 		std::cout << ccg.front() << " ";
