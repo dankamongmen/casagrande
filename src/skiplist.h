@@ -298,6 +298,15 @@ void push_front(const std::initializer_list<T> il){
 	}
 }
 
+// FIXME ugh!
+void push_front_rev(const std::initializer_list<T> il){
+	const T *cil = il.begin();
+
+	while(cil != il.end()){
+		push_front(*cil++);
+	}
+}
+
 void pop(){
 	pop_front();
 }

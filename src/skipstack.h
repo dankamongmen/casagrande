@@ -44,7 +44,7 @@ public:
 	}
 
 	inline void push(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
+		store.push_front_rev(ti);
 	}
 
 	friend std::ostream& operator<<(std::ostream& out,const Skipstack& ss){
