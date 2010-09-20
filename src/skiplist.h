@@ -236,15 +236,15 @@ void push_front(const T& ref){
 }
 
 void push_front(const std::initializer_list<T> il){
-	const T *cil;
+	const T *cil = il.end();
 
-	for(cil = il.end() ; cil != il.begin() ; --cil){
+	while(cil-- != il.begin()){
 		push_front(*cil);
 	}
 }
 
 T& pop(){
-	return pop_back();
+	return pop_front();
 }
 
 void push(const T& ref){
