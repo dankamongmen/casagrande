@@ -57,7 +57,7 @@ SkipIterator& operator=(const SkipIterator& other){
 	return *this;
 }
 
-bool operator==(const SkipIterator& other){
+bool operator==(const SkipIterator& other) const {
 	return sn == other.sn;
 }
 
@@ -85,11 +85,11 @@ Skipnode<T> *sn;
 };
 
 private:
+size_t nodes;
 Skipnode<T> *head;
-Skipnode<T> *pool;
 Skipnode<T> **link;
 
-void destroy(){
+static void destroy(Skipnode<T> *head){
 	Skipnode<T> *sn;
 
 	while( (sn = head) ){
@@ -100,23 +100,22 @@ void destroy(){
 
 public:
 Skiplist(){
-	pool = 0;
+	nodes = 0;
 	head = 0;
 	link = &head;
 }
 
 ~Skiplist(){
-	destroy();
+	destroy(head);
 }
 
 // Copy constructor
 Skiplist(const Skiplist& src){
-	Skipnode<T> *sn;
-
+	nodes = 0;
 	head = 0;
 	link = &head;
-	for(sn = src.head ; sn ; sn = sn->ptrat(0)){
-		push(**sn);
+	for(iterator i = src.begin() ; i != src.end() ; ++i){
+		push(*i);
 	}
 }
 
@@ -127,30 +126,57 @@ Skiplist& operator=(const Skiplist& src){
 	Skipnode<T> *ohead = 0;
 	Skipnode<T> **olink = &ohead;
 
-	// FIXME clean up (and rethrow) on exceptions
-	for(sn = src.head ; sn ; sn = sn->ptrat(0)){
-		Skipnode<T> *tmp = new Skipnode<T>(levels,**sn);
-		*olink = tmp;
-		olink = tmp->lnptrat(0);
+	try{
+		for(sn = src.head ; sn ; sn = sn->ptrat(0)){
+			Skipnode<T> *tmp = new Skipnode<T>(levels,**sn);
+			*olink = tmp;
+			olink = tmp->lnptrat(0);
+		}
+	}catch(...){
+		destroy(ohead);
+		throw;
 	}
-	destroy();
+	destroy(head);
 	head = ohead;
 	link = &head;
+	nodes = 0;
 	return *this;
 }
 
+size_t size(){
+	return nodes;
+}
+
 typedef SkipIterator iterator;
+typedef const SkipIterator const_iterator;
 
 iterator begin(){
-	return head;
+	return iterator(head);
+}
+
+const_iterator begin() const {
+	return const_iterator(head);
 }
 
 iterator end(){
-	return 0;
+	return iterator(0);
+}
+
+const_iterator end() const {
+	return const_iterator(0);
 }
 
 T& operator[](const int idx){
-	return *head;
+	iterator i = begin();
+	int x = idx;
+
+	while(i != end() && x--){
+		++i;
+	}
+	if(i == end()){
+		throw std::range_error("out-of-bounds");
+	}
+	return *i;
 }
 
 T& pop_back(){
@@ -166,6 +192,7 @@ T& pop_back(){
 	T& ret = ***prev;
 	delete(*prev);
 	*prev = 0;
+	--nodes;
 	return ret;
 }
 
@@ -180,6 +207,7 @@ T& pop_front(){
 	tmp = *prev;
 	*prev = (*prev)->ptrat(0);
 	delete(tmp);
+	--nodes;
 	return ret;
 }
 
@@ -187,6 +215,7 @@ void push_back(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
 	*link = sn; // FIXME
 	link = sn->lnptrat(0);
+	++nodes;
 }
 
 void push_back(const std::initializer_list<T> il){
@@ -203,6 +232,7 @@ void push_front(const T& ref){
 		link = sn->lnptrat(0);
 	}
 	head = sn;
+	++nodes;
 }
 
 void push_front(const std::initializer_list<T> il){

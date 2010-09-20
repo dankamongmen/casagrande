@@ -15,6 +15,16 @@ tester(const std::initializer_list<T> il){
 	cg.push(il);
 	std::cout << "<< operator-----------" << std::endl << cg << std::endl
 		<< "<< operator ends------" << std::endl;
+	if(cg.size() != il.size()){
+		std::cerr << "Expected " << il.size() << " size." << std::endl;
+		return -1;
+	}
+	if(cg.size()){
+		std::cout << "Index 0: " << cg[0] << std::endl;
+		if(cg.size() > 1){
+			std::cout << "Index " << (il.size() - 1) << ": " << cg[il.size() - 1] << std::endl;
+		}
+	}
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
@@ -25,9 +35,11 @@ tester(const std::initializer_list<T> il){
 		return -1;
 	}
 	C dg = cg; // test copy constructor
+	std::cout << "Popping base...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "Pop #" << z << ": " << cg.pop() << std::endl;
+		std::cout << cg.pop() << " ";
 	}
+	std::cout << std::endl;
 	count = 0;
 	for(I i = dg.begin() ; i != dg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
@@ -39,9 +51,11 @@ tester(const std::initializer_list<T> il){
 		return -1;
 	}
 	ccg = dg; // test object assignment
+	std::cout << "Popping copy...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "Pop #" << z << ": " << dg.pop() << std::endl;
+		std::cout << dg.pop() << " ";
 	}
+	std::cout << std::endl;
 	count = 0;
 	for(I i = ccg.begin() ; i != ccg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
@@ -52,9 +66,11 @@ tester(const std::initializer_list<T> il){
 		std::cerr << "Expected " << il.size() << " elements." << std::endl;
 		return -1;
 	}
+	std::cout << "Popping assigned...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << "Pop #" << z << ": " << ccg.pop() << std::endl;
+		std::cout << ccg.pop() << " ";
 	}
+	std::cout << std::endl;
 	return 0;
 }
 
