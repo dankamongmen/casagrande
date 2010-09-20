@@ -108,7 +108,7 @@ static int mtester(){
 
 int main(void){
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(mtester<Skiplist<int>,Skiplist<int>::iterator,int>()){
+	if(mtester<Skiplist<int,true>,Skiplist<int,true>::iterator,int>()){
 		std::cerr << "Error during skiplist tests!" << std::endl;
 		return EXIT_FAILURE;
 	}

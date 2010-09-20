@@ -47,7 +47,7 @@ friend std::ostream& operator<<(std::ostream& out,const Skipnode& sn){
 
 };
 
-template <class T>
+template <class T,bool MTSafe = false>
 class Skiplist {
 
 class SkipIterator{
@@ -144,8 +144,10 @@ Skipnode<T> **link;
 static const int levels = 1; // FIXME decay to linked list
 
 static void inline safelock(pthread_mutex_t *lock){
-	if(pthread_mutex_lock(lock)){
-		throw std::runtime_error("pthread_mutex_lock()");
+	if(MTSafe){
+		if(pthread_mutex_lock(lock)){
+			throw std::runtime_error("pthread_mutex_lock()");
+		}
 	}
 }
 
@@ -154,8 +156,10 @@ static void inline safelock(const Skiplist &sl){
 }
 
 static void inline safeunlock(pthread_mutex_t *lock){
-	if(pthread_mutex_unlock(lock)){
-		throw std::runtime_error("pthread_mutex_unlock()");
+	if(MTSafe){
+		if(pthread_mutex_unlock(lock)){
+			throw std::runtime_error("pthread_mutex_unlock()");
+		}
 	}
 }
 
@@ -164,7 +168,9 @@ static void inline safeunlock(const Skiplist &sl){
 }
 
 static void inline dirtyunlock(pthread_mutex_t *lock){
-	pthread_mutex_unlock(lock);
+	if(MTSafe){
+		pthread_mutex_unlock(lock);
+	}
 }
 
 static void inline dirtyunlock(const Skiplist &sl){
@@ -247,7 +253,6 @@ size_t size() const {
 bool empty() const {
 	return nodes == 0;
 }
-
 
 typedef T *pointer;
 typedef const T *const_pointer;
@@ -410,11 +415,17 @@ friend std::ostream& operator<<(std::ostream&  out,const Skiplist& sl){
 
 	safelock(sl);
 	try{
+		if(MTSafe){
+			out << "*LOCKED* ";
+		}
 		for(sn = sl.head ; sn ; sn = sn->ptrat(0)){
 			if(sn != sl.head){
 				out << ", ";
 			}
 			out << *sn;
+		}
+		if(MTSafe){
+			out << " *LOCKED*";
 		}
 	}catch(...){
 		dirtyunlock(sl);
@@ -426,9 +437,9 @@ friend std::ostream& operator<<(std::ostream&  out,const Skiplist& sl){
 
 };
 
-template <class T> std::map<uintmax_t,pthread_mutex_t> Skiplist<T>::locks;
-template <class T> pthread_mutex_t Skiplist<T>::lock_counter
+template <class T,bool MTSafe> std::map<uintmax_t,pthread_mutex_t> Skiplist<T,MTSafe>::locks;
+template <class T,bool MTSafe> pthread_mutex_t Skiplist<T,MTSafe>::lock_counter
 	= PTHREAD_MUTEX_INITIALIZER;
-template <class T> uintmax_t Skiplist<T>::uuid_counter = 0;
+template <class T,bool MTSafe> uintmax_t Skiplist<T,MTSafe>::uuid_counter = 0;
 
 #endif
