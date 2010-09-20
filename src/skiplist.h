@@ -2,6 +2,7 @@
 #define SRC_SKIPLIST
 
 #include <map>
+#include <cstdint>
 #include <stdexcept>
 #include <initializer_list>
 
