@@ -191,8 +191,14 @@ size_t size() const {
 	return nodes;
 }
 
+typedef T *pointer;
+typedef const T *const_pointer;
+typedef T& reference;
+typedef const T& const_reference;
 typedef SkipIterator iterator;
 typedef ConstSkipIterator const_iterator;
+typedef ptrdiff_t difference_type;
+typedef size_t size_type;
 
 iterator begin(){
 	return iterator(head);
@@ -208,10 +214,6 @@ iterator end(){
 
 const_iterator end() const {
 	return const_iterator(0);
-}
-
-const_iterator cend() const {
-	return end();
 }
 
 T& operator[](const int idx){

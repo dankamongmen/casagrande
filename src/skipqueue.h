@@ -24,9 +24,6 @@ typedef size_t size_type;
 reference front() { return store.front(); }
 const_reference front() const { return store.front(); }
 
-reference back() { return store.back(); }
-const_reference back() const { return store.back(); }
-
 iterator begin(){ return store.begin(); }
 const_iterator begin() const { return store.begin(); }
 
@@ -38,16 +35,16 @@ bool empty() const { return store.empty(); }
 
 size_type max_size() const { return store.max_size(); }
 
-inline const value_type &pop(){
-	return store.pop_back();
+inline void pop(){
+	store.pop_front();
 }
 
 inline void push(const value_type &val){
-	store.push_front(val);
+	store.push_back(val);
 }
 
 inline void push(const std::initializer_list<value_type> ti){
-	store.push_front(ti);
+	store.push_back(ti);
 }
 
 friend std::ostream& operator<<(std::ostream& out,const Skipqueue& sq){
