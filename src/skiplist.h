@@ -1,10 +1,9 @@
 #ifndef SRC_SKIPLIST
 #define SRC_SKIPLIST
 
+#include <map>
 #include <stdexcept>
 #include <initializer_list>
-
-#include <iostream>
 
 template <class T>
 class Skipnode { // FIXME make internal to Skiplist?
@@ -53,8 +52,8 @@ class Skiplist {
 
 class SkipIterator{
 public:
-SkipIterator(Skipnode<T> *p) : sn(p) {}
-~SkipIterator() {}
+SkipIterator(Skipnode<T> *p) : sn(p){}
+~SkipIterator(){}
 
 SkipIterator& operator=(const SkipIterator& other){
 	sn = other.sn;
@@ -90,8 +89,8 @@ Skipnode<T> *sn;
 
 class ConstSkipIterator{
 public:
-ConstSkipIterator(Skipnode<T> *p) : sn(p) {}
-~ConstSkipIterator() {}
+ConstSkipIterator(Skipnode<T> *p) : sn(p){}
+~ConstSkipIterator(){}
 
 ConstSkipIterator& operator=(const ConstSkipIterator& other){
 	sn = other.sn;
@@ -130,10 +129,47 @@ Skipnode<T> *sn;
 };
 
 private:
+uintmax_t uuid;
+
+// We need these to implement an ordering on Skiplists, so that we can use
+// a std::map to track external locks, since we regularly need to lock at
+// instance-scope, but have only a constant instance...is there a better way?
+static uintmax_t uuid_counter;
+static pthread_mutex_t lock_counter;
+static std::map<uintmax_t,pthread_mutex_t> locks;
+
 size_t nodes;
 Skipnode<T> *head;
 Skipnode<T> **link;
 static const int levels = 1; // FIXME decay to linked list
+
+static void inline safelock(pthread_mutex_t *lock){
+	if(pthread_mutex_lock(lock)){
+		throw std::runtime_error("pthread_mutex_lock()");
+	}
+}
+
+static void inline safelock(const Skiplist &sl){
+	safelock(&locks[sl.uuid]);
+}
+
+static void inline safeunlock(pthread_mutex_t *lock){
+	if(pthread_mutex_unlock(lock)){
+		throw std::runtime_error("pthread_mutex_unlock()");
+	}
+}
+
+static void inline safeunlock(const Skiplist &sl){
+	safeunlock(&locks[sl.uuid]);
+}
+
+static void inline dirtyunlock(pthread_mutex_t *lock){
+	pthread_mutex_unlock(lock);
+}
+
+static void inline dirtyunlock(const Skiplist &sl){
+	dirtyunlock(&locks[sl.uuid]);
+}
 
 static void destroy(Skipnode<T> *head){
 	Skipnode<T> *sn;
@@ -149,9 +185,17 @@ Skiplist(){
 	nodes = 0;
 	head = 0;
 	link = &head;
+	safelock(&lock_counter);
+	uuid = uuid_counter++;
+	safeunlock(&lock_counter);
+	if(pthread_mutex_init(&locks[uuid],NULL)){
+		throw std::bad_alloc();
+	}
 }
 
+// No actions may be performed while (or once) the destructor is invoked!
 ~Skiplist(){
+	pthread_mutex_destroy(&locks[uuid]);
 	destroy(head);
 }
 
@@ -163,6 +207,9 @@ Skiplist(const Skiplist& src){
 	for(const_iterator i = src.begin() ; i != src.end() ; ++i){
 		push_back(*i);
 	}
+	safelock(&lock_counter);
+	uuid = uuid_counter++;
+	safeunlock(&lock_counter);
 }
 
 // Assignment
@@ -184,7 +231,13 @@ Skiplist& operator=(const Skiplist& src){
 	head = ohead;
 	link = &head;
 	nodes = 0;
+	// do not take on the new uuid!
 	return *this;
+}
+
+// Relationals (needed by map)
+bool operator<(const Skiplist& src){
+	return uuid < src.uuid;
 }
 
 size_t size() const {
@@ -217,33 +270,48 @@ const_iterator end() const {
 }
 
 T& operator[](const int idx){
-	iterator i = begin();
-	int x = idx;
+	iterator i;
+	safelock(*this);
+	try{
+		int x = idx;
 
-	while(i != end() && x--){
-		++i;
+	       	i = begin();
+		while(i != end() && x--){
+			++i;
+		}
+		if(i == end()){
+			throw std::range_error("out-of-bounds");
+		}
+	}catch(...){
+		dirtyunlock(*this);
+		throw;
 	}
-	if(i == end()){
-		throw std::range_error("out-of-bounds");
-	}
+	safeunlock(*this);
 	return *i;
 }
 
-T& pop_back(){
+// FIXME O(N), ack!
+void pop_back(){
 	Skipnode<T> **prev;
 
-	if(*(prev = &head) == 0){
-		throw std::range_error("underflow");
+	safelock(*this);
+	try{
+		if(*(prev = &head) == 0){
+			throw std::range_error("underflow");
+		}
+		while((*prev)->ptrat(0)){
+			prev = (*prev)->lnptrat(0);
+		}
+		link = prev;
+		T& ret = ***prev;
+		delete(*prev);
+		*prev = 0;
+		--nodes;
+	}catch(...){
+		dirtyunlock(*this);
+		throw;
 	}
-	while((*prev)->ptrat(0)){
-		prev = (*prev)->lnptrat(0);
-	}
-	link = prev;
-	T& ret = ***prev;
-	delete(*prev);
-	*prev = 0;
-	--nodes;
-	return ret;
+	safeunlock(*this);
 }
 
 // Undefined behavior when empty
@@ -254,25 +322,35 @@ T& front(){
 void pop_front(){
 	Skipnode<T> **prev,*tmp;
 
-	if(*(prev = &head) == 0){
-		throw std::range_error("underflow");
+	safelock(*this);
+	try{
+		if(*(prev = &head) == 0){
+			throw std::range_error("underflow");
+		}
+		if(link == head->lnptrat(0)){
+			link = &head;
+		}
+		tmp = *prev;
+		*prev = (*prev)->ptrat(0);
+		delete(tmp);
+		--nodes;
+	}catch(...){
+		dirtyunlock(*this);
+		throw;
 	}
-	if(link == head->lnptrat(0)){
-		link = &head;
-	}
-	tmp = *prev;
-	*prev = (*prev)->ptrat(0);
-	delete(tmp);
-	--nodes;
+	safeunlock(*this);
 }
 
 void push_back(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
-	*link = sn; // FIXME
+	safelock(*this);
+	*link = sn;
 	link = sn->lnptrat(0);
 	++nodes;
+	safeunlock(*this);
 }
 
+// Individual pushes are locked, but not the list as a whole.
 void push_back(const std::initializer_list<T> il){
 	const T *cil;
 
@@ -283,13 +361,16 @@ void push_back(const std::initializer_list<T> il){
 
 void push_front(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
+	safelock(*this);
 	if((*sn->lnptrat(0) = head) == 0){
 		link = sn->lnptrat(0);
 	}
 	head = sn;
 	++nodes;
+	safeunlock(*this);
 }
 
+// Individual pushes are locked, but not the list as a whole.
 void push_front(const std::initializer_list<T> il){
 	const T *cil = il.end();
 
@@ -322,15 +403,27 @@ void push(const std::initializer_list<T> il){
 friend std::ostream& operator<<(std::ostream&  out,const Skiplist& sl){
 	Skipnode<T> *sn;
 
-	for(sn = sl.head ; sn ; sn = sn->ptrat(0)){
-		if(sn != sl.head){
-			out << ", ";
+	safelock(sl);
+	try{
+		for(sn = sl.head ; sn ; sn = sn->ptrat(0)){
+			if(sn != sl.head){
+				out << ", ";
+			}
+			out << *sn;
 		}
-		out << *sn;
+	}catch(...){
+		dirtyunlock(sl);
+		throw;
 	}
+	safeunlock(sl);
 	return out;
 }
 
 };
+
+template <class T> std::map<uintmax_t,pthread_mutex_t> Skiplist<T>::locks;
+template <class T> pthread_mutex_t Skiplist<T>::lock_counter
+	= PTHREAD_MUTEX_INITIALIZER;
+template <class T> uintmax_t Skiplist<T>::uuid_counter = 0;
 
 #endif
