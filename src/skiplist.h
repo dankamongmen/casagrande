@@ -7,7 +7,7 @@
 #include <iostream>
 
 template <class T>
-class Skipnode {
+class Skipnode { // FIXME make internal to Skiplist?
 
 private:
 T obj;
@@ -127,7 +127,7 @@ Skiplist& operator=(const Skiplist& src){
 	Skipnode<T> *ohead = 0;
 	Skipnode<T> **olink = &ohead;
 
-	// FIXME clean up on exceptions
+	// FIXME clean up (and rethrow) on exceptions
 	for(sn = src.head ; sn ; sn = sn->ptrat(0)){
 		Skipnode<T> *tmp = new Skipnode<T>(levels,**sn);
 		*olink = tmp;
@@ -153,7 +153,7 @@ T& operator[](const int idx){
 	return *head;
 }
 
-T& pop(){
+T& pop_back(){
 	Skipnode<T> **prev;
 
 	if(*(prev = &head) == 0){
@@ -162,27 +162,67 @@ T& pop(){
 	while((*prev)->ptrat(0)){
 		prev = (*prev)->lnptrat(0);
 	}
-	if((link = prev) == &head){
-		link = &head;
-	}
+	link = prev;
 	T& ret = ***prev;
 	delete(*prev);
 	*prev = 0;
 	return ret;
 }
 
-void push(const T& ref){
+T& pop_front(){
+	Skipnode<T> **prev,*tmp;
+
+	if(*(prev = &head) == 0){
+		throw std::range_error("underflow");
+	}
+	link = prev;
+	T& ret = ***prev;
+	tmp = *prev;
+	*prev = (*prev)->ptrat(0);
+	delete(tmp);
+	return ret;
+}
+
+void push_back(const T& ref){
 	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
 	*link = sn; // FIXME
 	link = sn->lnptrat(0);
 }
 
-void push(const std::initializer_list<T> il){
+void push_back(const std::initializer_list<T> il){
 	const T *cil;
 
 	for(cil = il.begin() ; cil != il.end() ; ++cil){
-		push(*cil);
+		push_back(*cil);
 	}
+}
+
+void push_front(const T& ref){
+	Skipnode<T> *sn = new Skipnode<T>(levels,ref);
+	if((sn->ptrat(0) = head) == 0){
+		link = sn->lnptrat(0);
+	}
+	head = sn;
+}
+
+void push_front(const std::initializer_list<T> il){
+	const T *cil;
+
+	for(cil = il.end() ; cil != il.begin() ; --cil){
+		push_front(*cil);
+	}
+}
+
+T& pop(){
+	return pop_front();
+}
+
+void push(const T& ref){
+	return push_back(ref);
+}
+
+void push(const std::initializer_list<T> il){
+	return push_back(il);
 }
 
 friend std::ostream&  operator<<(std::ostream&  out,const Skiplist& sl){
