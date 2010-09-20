@@ -1,9 +1,9 @@
-#ifndef SRC_SKIPQUEUE
-#define SRC_SKIPQUEUE
+#ifndef SRC_SKIPSTACK
+#define SRC_SKIPSTACK
 
 #include <skiplist.h>
 
-template <class T, class C = Skiplist<T>> class Skipqueue {
+template <class T, class C = Skiplist<T>> class Skipstack {
 private:
 	C store;
 
@@ -49,24 +49,13 @@ public:
 	}
 
 	inline void push(const value_type &val){
-		store.push_front(val);
+		store.push_back(val);
 	}
 
 	inline void push(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
+		store.push_back(ti);
 	}
 
-	inline const value_type &pop_back(){
-		return store.pop_back();
-	}
-
-	inline void push_front(const value_type &val){
-		store.push_front(val);
-	}
-
-	inline void push_front(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
-	}
 };
 
 #endif

@@ -2,12 +2,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <skiplist.h>
-#include <casaqueue.h>
-#include <casastack.h>
+#include <skipqueue.h>
+#include <skipstack.h>
 #include <initializer_list>
 
-template <class C,class I,class T> static int
-tester(const std::initializer_list<T> il){
+template <class C,class I,class T>
+static int tester(const std::initializer_list<T> il){
 	unsigned count = 0;
 
 	C cg,ccg;
@@ -84,22 +84,28 @@ tester(const std::initializer_list<T> il){
 	return 0;
 }
 
-int main(void){
+template <class C,class I,class T>
+static int mtester(){
 	const std::initializer_list<int> zl = {};
 	const std::initializer_list<int> ml = {1911};
 	const std::initializer_list<int> il = {1, 2, 3, 4, 2010, 9, 8, 7, 6, 5};
 
+	if(tester<C,I,T>(zl)){
+		return -1;
+	}
+	if(tester<C,I,T>(ml)){
+		return -1;
+	}
+	if(tester<C,I,T>(il)){
+		return -1;
+	}
+	return 0;
+}
+
+int main(void){
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
-	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(zl)){
-		std::cerr << "Error during deque tests!" << std::endl;
-		return EXIT_FAILURE;
-	}
-	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(ml)){
-		std::cerr << "Error during deque tests!" << std::endl;
-		return EXIT_FAILURE;
-	}
-	if(tester<Skiplist<int>,Skiplist<int>::iterator,int>(il)){
-		std::cerr << "Error during deque tests!" << std::endl;
+	if(mtester<Skiplist<int>,Skiplist<int>::iterator,int>()){
+		std::cerr << "Error during skiplist tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::cout << "All tests succeeded!" << std::endl;
