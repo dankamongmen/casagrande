@@ -88,6 +88,7 @@ private:
 size_t nodes;
 Skipnode<T> *head;
 Skipnode<T> **link;
+static const int levels = 1; // FIXME decay to linked list
 
 static void destroy(Skipnode<T> *head){
 	Skipnode<T> *sn;
@@ -115,20 +116,18 @@ Skiplist(const Skiplist& src){
 	head = 0;
 	link = &head;
 	for(iterator i = src.begin() ; i != src.end() ; ++i){
-		push(*i);
+		push_back(*i);
 	}
 }
 
-static const int levels = 1; // FIXME decay to linked list
-
+// Assignment
 Skiplist& operator=(const Skiplist& src){
-	Skipnode<T> *sn;
 	Skipnode<T> *ohead = 0;
 	Skipnode<T> **olink = &ohead;
 
 	try{
-		for(sn = src.head ; sn ; sn = sn->ptrat(0)){
-			Skipnode<T> *tmp = new Skipnode<T>(levels,**sn);
+		for(iterator i = src.begin() ; i != src.end() ; ++i){
+			Skipnode<T> *tmp = new Skipnode<T>(levels,*i);
 			*olink = tmp;
 			olink = tmp->lnptrat(0);
 		}
