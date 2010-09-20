@@ -244,6 +244,11 @@ size_t size() const {
 	return nodes;
 }
 
+bool empty() const {
+	return nodes == 0;
+}
+
+
 typedef T *pointer;
 typedef const T *const_pointer;
 typedef T& reference;
@@ -290,7 +295,7 @@ T& operator[](const int idx){
 	return *i;
 }
 
-// FIXME O(N), ack!
+// FIXME ought be O(1) for deque, ack!
 void pop_back(){
 	Skipnode<T> **prev;
 
