@@ -24,7 +24,7 @@ $(PROJ): $(CSRC) $(CINC)
 
 test: all
 	for test in $(CBIN) ; do \
-		valgrind --tool=memcheck --leak-check=full ./skiplist ; done
+		valgrind --tool=memcheck --track-origins=yes --leak-check=full ./skiplist ; done
 	for test in $(CBIN) ; do ./$$test ; done
 
 

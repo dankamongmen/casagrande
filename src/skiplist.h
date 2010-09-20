@@ -47,35 +47,29 @@ friend std::ostream& operator<<(std::ostream& out,const Skipnode& sn){
 template <class T>
 class Skiplist {
 
-class Skiperator{
+class SkipIterator{
 public:
-Skiperator(Skipnode<T> *p) : sn(p) {}
-~Skiperator() {}
+SkipIterator(Skipnode<T> *p) : sn(p) {}
+~SkipIterator() {}
 
-Skiperator& operator=(const Skiperator& other){
+SkipIterator& operator=(const SkipIterator& other){
 	sn = other.sn;
 	return *this;
 }
 
-bool operator==(const Skiperator& other){
+bool operator==(const SkipIterator& other){
 	return sn == other.sn;
 }
 
-bool operator!=(const Skiperator& other) const {
+bool operator!=(const SkipIterator& other) const {
 	return sn != other.sn;
 }
 
-Skiperator& operator++(){
+SkipIterator& operator++(){
 	if(sn != NULL){
 		sn = sn->ptrat(0);
 	}
 	return *this;
-}
-
-Skiperator& operator++(int){
-	Skiperator tmp(*this);
-	++(*this);
-	return tmp;
 }
 
 T& operator*() const {
@@ -83,7 +77,7 @@ T& operator*() const {
 }
 
 T* operator->(){
-	return &*(Skiplist<T>::Skiperator)*this;
+	return &*(Skiplist<T>::SkipIterator)*this;
 }
 
 private:
@@ -92,21 +86,27 @@ Skipnode<T> *sn;
 
 private:
 Skipnode<T> *head;
+Skipnode<T> *pool;
 Skipnode<T> **link;
 
-public:
-Skiplist(){
-	head = 0;
-	link = &head;
-}
-
-~Skiplist(){
+void destroy(){
 	Skipnode<T> *sn;
 
 	while( (sn = head) ){
 		head = sn->ptrat(0);
 		delete sn;
 	}
+}
+
+public:
+Skiplist(){
+	pool = 0;
+	head = 0;
+	link = &head;
+}
+
+~Skiplist(){
+	destroy();
 }
 
 // Copy constructor
@@ -120,9 +120,26 @@ Skiplist(const Skiplist& src){
 	}
 }
 
-typedef Skiperator iterator;
-
 static const int levels = 1; // FIXME decay to linked list
+
+Skiplist& operator=(const Skiplist& src){
+	Skipnode<T> *sn;
+	Skipnode<T> *ohead = 0;
+	Skipnode<T> **olink = &ohead;
+
+	// FIXME clean up on exceptions
+	for(sn = src.head ; sn ; sn = sn->ptrat(0)){
+		Skipnode<T> *tmp = new Skipnode<T>(levels,**sn);
+		*olink = tmp;
+		olink = tmp->lnptrat(0);
+	}
+	destroy();
+	head = ohead;
+	link = &head;
+	return *this;
+}
+
+typedef SkipIterator iterator;
 
 iterator begin(){
 	return head;
@@ -149,7 +166,7 @@ T& pop(){
 		link = &head;
 	}
 	T& ret = ***prev;
-	//delete(*prev);
+	delete(*prev);
 	*prev = 0;
 	return ret;
 }
