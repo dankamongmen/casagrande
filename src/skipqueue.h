@@ -5,56 +5,55 @@
 
 template <class T, class C = Skiplist<T>> class Skipqueue {
 private:
-	C store;
+C store;
 
 public:
-	typedef T value_type;
+typedef T value_type;
 
-	typedef value_type *pointer;
-	typedef const value_type *const_pointer;
-	typedef value_type &reference;
-	typedef const value_type &const_reference;
+typedef value_type *pointer;
+typedef const value_type *const_pointer;
+typedef value_type &reference;
+typedef const value_type &const_reference;
 
-	typedef value_type *iterator;
-	typedef const value_type *const_iterator;
+typedef typename C::iterator iterator;
+typedef typename C::const_iterator const_iterator;
 
-	typedef ptrdiff_t difference_type;
-	typedef size_t size_type;
+typedef ptrdiff_t difference_type;
+typedef size_t size_type;
 
-	reference operator[](size_type n){
-		return &store.block[n];
-	}
+reference front() { return store.front(); }
+const_reference front() const { return store.front(); }
 
-	const_reference operator[](size_type n) const;
+reference back() { return store.back(); }
+const_reference back() const { return store.back(); }
 
-	reference front() { return store.front(); }
-	const_reference front() const { return store.front(); }
+iterator begin(){ return store.begin(); }
+const_iterator begin() const { return store.begin(); }
 
-	reference back() { return store.back(); }
-	const_reference back() const { return store.back(); }
+iterator end(){ return store.end(); }
+const_iterator end() const { return store.end(); }
 
-	iterator begin(){ return store.begin(); }
-	const_iterator begin() const { return store.begin(); }
+size_type size() const { return store.size(); }
+bool empty() const { return store.empty(); }
 
-	iterator end(){ return store.end(); }
-	const_iterator end() const { return store.end(); }
+size_type max_size() const { return store.max_size(); }
 
-	size_type size() const { return store.size(); }
-	bool empty() const { return store.empty(); }
+inline const value_type &pop(){
+	return store.pop_back();
+}
 
-	size_type max_size() const { return store.max_size(); }
+inline void push(const value_type &val){
+	store.push_front(val);
+}
 
-	inline const value_type &pop(){
-		return store.pop_back();
-	}
+inline void push(const std::initializer_list<value_type> ti){
+	store.push_front(ti);
+}
 
-	inline void push(const value_type &val){
-		store.push_front(val);
-	}
-
-	inline void push(const std::initializer_list<value_type> ti){
-		store.push_front(ti);
-	}
+friend std::ostream& operator<<(std::ostream& out,const Skipqueue& sq){
+	out << sq.store;
+	return out;
+}
 
 };
 

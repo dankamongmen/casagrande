@@ -15,17 +15,11 @@ public:
 	typedef value_type &reference;
 	typedef const value_type &const_reference;
 
-	typedef value_type *iterator;
-	typedef const value_type *const_iterator;
+	typedef typename C::iterator iterator;
+	typedef typename C::const_iterator const_iterator;
 
 	typedef ptrdiff_t difference_type;
 	typedef size_t size_type;
-
-	reference operator[](size_type n){
-		return &store.block[n];
-	}
-
-	const_reference operator[](size_type n) const;
 
 	reference front() { return store.front(); }
 	const_reference front() const { return store.front(); }
@@ -54,6 +48,11 @@ public:
 
 	inline void push(const std::initializer_list<value_type> ti){
 		store.push_back(ti);
+	}
+
+	friend std::ostream& operator<<(std::ostream& out,const Skipstack& ss){
+		out << ss.store;
+		return out;
 	}
 
 };

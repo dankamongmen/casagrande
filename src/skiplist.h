@@ -187,7 +187,7 @@ Skiplist& operator=(const Skiplist& src){
 	return *this;
 }
 
-size_t size(){
+size_t size() const {
 	return nodes;
 }
 
@@ -306,7 +306,7 @@ void push(const std::initializer_list<T> il){
 	return push_front(il);
 }
 
-friend std::ostream&  operator<<(std::ostream&  out,const Skiplist& sl){
+friend std::ostream& operator<<(std::ostream&  out,const Skiplist& sl){
 	Skipnode<T> *sn;
 
 	for(sn = sl.head ; sn ; sn = sn->ptrat(0)){

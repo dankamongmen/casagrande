@@ -7,7 +7,7 @@
 #include <initializer_list>
 
 template <class C,class I,class T>
-static int tester(const std::initializer_list<T> il){
+static int qtester(const std::initializer_list<T> il){
 	unsigned count = 0;
 
 	C cg,ccg;
@@ -18,12 +18,14 @@ static int tester(const std::initializer_list<T> il){
 		std::cerr << "Expected " << il.size() << " size." << std::endl;
 		return -1;
 	}
+	/*
 	if(cg.size()){
 		std::cout << "Index 0: " << cg[0] << std::endl;
 		if(cg.size() > 1){
 			std::cout << "Index " << (il.size() - 1) << ": " << cg[il.size() - 1] << std::endl;
 		}
 	}
+	*/
 	for(I i = cg.begin() ; i != cg.end() ; ++i){
 		std::cout << "Element #" << count << ": " << *i << std::endl;
 		++count;
@@ -90,13 +92,13 @@ static int mtester(){
 	const std::initializer_list<int> ml = {1911};
 	const std::initializer_list<int> il = {1, 2, 3, 4, 2010, 9, 8, 7, 6, 5};
 
-	if(tester<C,I,T>(zl)){
+	if(qtester<C,I,T>(zl)){
 		return -1;
 	}
-	if(tester<C,I,T>(ml)){
+	if(qtester<C,I,T>(ml)){
 		return -1;
 	}
-	if(tester<C,I,T>(il)){
+	if(qtester<C,I,T>(il)){
 		return -1;
 	}
 	return 0;
@@ -106,6 +108,14 @@ int main(void){
 	std::cout << "Performing deque tests (problem 1)..." << std::endl;
 	if(mtester<Skiplist<int>,Skiplist<int>::iterator,int>()){
 		std::cerr << "Error during skiplist tests!" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if(mtester<Skipqueue<int>,Skipqueue<int>::iterator,int>()){
+		std::cerr << "Error during skipqueue tests!" << std::endl;
+		return EXIT_FAILURE;
+	}
+	if(mtester<Skipstack<int>,Skipstack<int>::iterator,int>()){
+		std::cerr << "Error during skipstack tests!" << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::cout << "All tests succeeded!" << std::endl;
