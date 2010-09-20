@@ -1,9 +1,9 @@
-#ifndef CASAGRANDE_STACK
-#define CASAGRANDE_STACK
+#ifndef SRC_SKIPSTACK
+#define SRC_SKIPSTACK
 
-#include <casastack.h>
+#include <skiplist.h>
 
-template <class T, class C = casagrande<T>> class casastack {
+template <class T, class C = Skiplist<T>> class Skipstack {
 private:
 	C store;
 

@@ -1,9 +1,9 @@
-#ifndef CASAGRANDE_QUEUE
-#define CASAGRANDE_QUEUE
+#ifndef SRC_SKIPQUEUE
+#define SRC_SKIPQUEUE
 
-#include <casagrande.h>
+#include <skiplist.h>
 
-template <class T, class C = casagrande<T>> class casaqueue {
+template <class T, class C = Skiplist<T>> class Skipqueue {
 private:
 	C store;
 
