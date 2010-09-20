@@ -36,7 +36,8 @@ tester(const std::initializer_list<T> il){
 	C dg = cg; // test copy constructor
 	std::cout << "Popping base...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << cg.pop() << " ";
+		std::cout << cg.front() << " ";
+		cg.pop();
 	}
 	std::cout << std::endl;
 	count = 0;
@@ -52,7 +53,8 @@ tester(const std::initializer_list<T> il){
 	ccg = dg; // test object assignment
 	std::cout << "Popping copy...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << dg.pop() << " ";
+		std::cout << dg.front() << " ";
+		dg.pop();
 	}
 	std::cout << std::endl;
 	count = 0;
@@ -67,7 +69,8 @@ tester(const std::initializer_list<T> il){
 	}
 	std::cout << "Popping assigned...";
 	for(unsigned z = 0 ; z < count ; ++z){
-		std::cout << ccg.pop() << " ";
+		std::cout << ccg.front() << " ";
+		ccg.pop();
 	}
 	std::cout << std::endl;
 	return 0;

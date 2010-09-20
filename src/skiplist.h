@@ -106,6 +106,10 @@ bool operator!=(const ConstSkipIterator& other) const {
 	return sn != other.sn;
 }
 
+bool operator!=(ConstSkipIterator& other) const {
+	return sn != other.sn;
+}
+
 ConstSkipIterator& operator++(){
 	if(sn != NULL){
 		sn = sn->ptrat(0);
@@ -206,6 +210,10 @@ const_iterator end() const {
 	return const_iterator(0);
 }
 
+const_iterator cend() const {
+	return end();
+}
+
 T& operator[](const int idx){
 	iterator i = begin();
 	int x = idx;
@@ -236,19 +244,22 @@ T& pop_back(){
 	return ret;
 }
 
-T& pop_front(){
+// Undefined behavior when empty
+T& front(){
+	return **head;
+}
+
+void pop_front(){
 	Skipnode<T> **prev,*tmp;
 
 	if(*(prev = &head) == 0){
 		throw std::range_error("underflow");
 	}
 	link = prev;
-	T& ret = ***prev;
 	tmp = *prev;
 	*prev = (*prev)->ptrat(0);
 	delete(tmp);
 	--nodes;
-	return ret;
 }
 
 void push_back(const T& ref){
@@ -283,8 +294,8 @@ void push_front(const std::initializer_list<T> il){
 	}
 }
 
-T& pop(){
-	return pop_front();
+void pop(){
+	pop_front();
 }
 
 void push(const T& ref){
